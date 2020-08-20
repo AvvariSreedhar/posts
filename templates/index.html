@@ -6,10 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Posts</title>
     <style>
-        body 
-        {
+        body {
             font-family: monospace;
-            padding-bottom: 50px;
+            padding: 20px 15px 40px;
+        }
+
+        #posts-wall {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .post {
@@ -18,7 +23,11 @@
             color: #463a3a;
             text-align: center;
             padding: 25px;
-            margin: 20px 20px 0px;
+            margin-bottom: 20px;
+            border-radius: 3px;
+            width: 1000px;
+            max-width: 100%;
+            box-sizing: border-box;
             font-size: 20px;
             animation-name: fade;
             animation-duration: 1s;
@@ -26,52 +35,54 @@
             animation-fill-mode: forwards;
         }
 
-        .hide
-        {
+        .hide {
             font-size: 20px;
             background-image: linear-gradient(120deg, tomato, rgba(255, 99, 71, 0.40));
             position: absolute;
-            right: 10px;
-            top: 10px;
+            right: 1px;
+            top: 1px;
             border: 1px solid black;
             padding: 0px 5px;
+            user-select: none;
+            -moz-user-select: none;
+            -webkit-user-select: none;
         }
 
-        .hide:hover
-        {
+        .hide:hover {
             cursor: pointer;
             opacity: 0.8;
         }
 
-        .hide:focus
-        {
-            outline: none;            
-        } 
+        .hide:focus {
+            outline: none;
+        }
+
+        .post::selection {
+            background-color: black;
+            color: aqua;
+        }
 
         @keyframes fade {
-            0%
-            {
+            0% {
                 opacity: 1.0;
                 padding: 25px;
-                margin: 20px 20px 0px;
+                margin-bottom: 20px;
                 height: auto;
             }
 
-            50%
-            {   
+            50% {
                 opacity: 0.0;
                 padding: 25px;
-                margin: 20px 0px 0px 0px;
+                margin-bottom: 20px;
                 height: auto;
             }
 
-            100%
-            {
+            100% {
                 opacity: 0.0;
                 padding: 0px;
                 margin: 0px;
                 height: 0px;
-            }   
+            }
         }
     </style>
 
@@ -88,14 +99,12 @@
 
         // Load 'quantity' posts when the User hits the bottom of the page
         window.onscroll = () => {
-            if (window.innerHeight + window.scrollY >= document.body.offsetHeight)
-            {
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
                 load()
             }
         }
 
-        function load() 
-        {
+        function load() {
             // Start count for posts
             const start = counter + 1
 
@@ -104,18 +113,17 @@
 
             // Request for posts with parameters as 'start', 'end'
             fetch(`/post?start=${start}&end=${end}`)
-            .then(response => response.json())
-            .then(data => {
-                data.forEach(add_content)
-            })
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(add_content)
+                })
 
             // Update no of loaded posts
             counter += quantity
         }
 
         // Add content to a post
-        function add_content(element)
-        {
+        function add_content(element) {
             // Create a post div
             const post = document.createElement('div')
             post.className = 'post'
@@ -131,7 +139,7 @@
 
             // The behaviour of this-keyword with an arrow function is different
             // Add event handler to hide-button
-            hide.onclick = function() {
+            hide.onclick = function () {
 
                 const post = this.parentElement
 
@@ -139,7 +147,7 @@
                 post.style.animationPlayState = 'running'
 
                 // After the animation is complete, remove the post
-                post.addEventListener('animationend', function(){
+                post.addEventListener('animationend', function () {
                     this.remove()
                 })
             }
